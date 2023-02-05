@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfirebasequiz230205/screens/create_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,7 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+
+          Navigator.push(context,MaterialPageRoute(builder:(context) => CreateScreen()));
+        },
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -32,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   streamSnapshot.data!.docs[index];
                   return GestureDetector(
                     onTap: () {
+
                       //   Navigator.push(
                       //       context,
                       //       MaterialPageRoute(
