@@ -13,10 +13,15 @@ class CreateScreen extends StatefulWidget {
 class _CreateScreenState extends State<CreateScreen> {
   final _formKey = GlobalKey<FormState>();
   late String quizImageUrl, quizTitle, quizDescription, quizId;
-  DataBaseService dataBaseService = new DataBaseService();
+  DatabaseService dataBaseService = new DatabaseService();
+
+  bool _isLoading = false;
 
   createQuizOnline() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       quizId = randomAlphaNumeric(16);
 
       Map<String, String> quizMap = {
@@ -27,8 +32,16 @@ class _CreateScreenState extends State<CreateScreen> {
       };
 
       await dataBaseService.addQuizData(quizMap, quizId).then((value) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AddQuestion()));
+        setState(() {
+          _isLoading = false;
+
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddQuestion(
+                        quizId: quizId,
+                      )));
+        });
       });
     }
   }
@@ -43,46 +56,57 @@ class _CreateScreenState extends State<CreateScreen> {
       appBar: AppBar(
         title: Text('Create Quiz'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
-            child: Column(
-              children: [
-                TextFormField(
-                  validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                  decoration: InputDecoration(hintText: '아미지 Url'),
-                  onChanged: (val) {
-                    quizImageUrl = val;
-                  },
+      body: _isLoading
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Form(
+              key: _formKey,
+              child: Container(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '아미지 Url'),
+                        onChanged: (val) {
+                          quizImageUrl = val;
+                        },
+                      ),
+                      SizedBox(height: 6),
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '문제 제목'),
+                        onChanged: (val) {
+                          quizTitle = val;
+                        },
+                      ),
+                      SizedBox(height: 6),
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '문제 설명'),
+                        onChanged: (val) {
+                          quizDescription = val;
+                        },
+                      ),
+                      Spacer(),
+                      SizedBox(
+                        width: width * 0.7,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              createQuizOnline();
+                            },
+                            child: Text("저장")),
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(height: 6),
-                TextFormField(
-                  validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                  decoration: InputDecoration(hintText: '문제 제목'),
-                  onChanged: (val) {
-                    quizTitle = val;
-                  },
-                ),
-                SizedBox(height: 6),
-                TextFormField(
-                  validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                  decoration: InputDecoration(hintText: '문제 설명'),
-                  onChanged: (val) {
-                    quizDescription = val;
-                  },
-                ),
-                Spacer(),
-                SizedBox(
-                  width: width * 0.7,
-                  child: ElevatedButton(onPressed: () {}, child: Text("저장")),
-                )
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
