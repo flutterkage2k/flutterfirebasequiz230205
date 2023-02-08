@@ -12,11 +12,11 @@ class AddQuestion extends StatefulWidget {
 class _AddQuestionState extends State<AddQuestion> {
   final _formKey = GlobalKey<FormState>();
   late String question, option1, option2, option3, option4;
-  bool _isLoading = false;
-
   DatabaseService databaseService = new DatabaseService();
 
-  uploadQuestionData() {
+  bool _isLoading = false;
+
+  uploadQuestionData() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -30,15 +30,13 @@ class _AddQuestionState extends State<AddQuestion> {
         "option4": option4,
       };
 
-      databaseService.addQuestionData(questionMap, widget.quizId).then(
-        (value) {
-          setState(
-            () {
-              _isLoading = false;
-            },
-          );
-        },
-      );
+      await databaseService
+          .addQuestionData(questionMap, widget.quizId)
+          .then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
   }
 
@@ -60,80 +58,83 @@ class _AddQuestionState extends State<AddQuestion> {
                 child: CircularProgressIndicator(),
               ),
             )
-          : Container(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                      decoration: InputDecoration(hintText: '문제'),
-                      onChanged: (val) {
-                        question = val;
-                      },
-                    ),
-                    SizedBox(height: 6),
-                    TextFormField(
-                      validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                      decoration: InputDecoration(hintText: '옵션1 (정답)'),
-                      onChanged: (val) {
-                        option1 = val;
-                      },
-                    ),
-                    SizedBox(height: 6),
-                    TextFormField(
-                      validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                      decoration: InputDecoration(hintText: '옵션2'),
-                      onChanged: (val) {
-                        option2 = val;
-                      },
-                    ),
-                    SizedBox(height: 6),
-                    TextFormField(
-                      validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                      decoration: InputDecoration(hintText: '옵션3'),
-                      onChanged: (val) {
-                        option3 = val;
-                      },
-                    ),
-                    SizedBox(height: 6),
-                    TextFormField(
-                      validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                      decoration: InputDecoration(hintText: '옵션4'),
-                      onChanged: (val) {
-                        option4 = val;
-                      },
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SizedBox(
-                                width: width / 3,
-                                child: ElevatedButton(
-                                    onPressed: () {}, child: Text("저장 끝내기")),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              SizedBox(
-                                width: width / 3,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      uploadQuestionData();
-                                    },
-                                    child: Text("계속 입력")),
-                              ),
-                            ],
-                          ),
-                        ],
+          : Form(
+              key: _formKey,
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '문제'),
+                        onChanged: (val) {
+                          question = val;
+                        },
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 6),
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '옵션1 (정답)'),
+                        onChanged: (val) {
+                          option1 = val;
+                        },
+                      ),
+                      SizedBox(height: 6),
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '옵션2'),
+                        onChanged: (val) {
+                          option2 = val;
+                        },
+                      ),
+                      SizedBox(height: 6),
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '옵션3'),
+                        onChanged: (val) {
+                          option3 = val;
+                        },
+                      ),
+                      SizedBox(height: 6),
+                      TextFormField(
+                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                        decoration: InputDecoration(hintText: '옵션4'),
+                        onChanged: (val) {
+                          option4 = val;
+                        },
+                      ),
+                      Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(
+                                  width: width / 3,
+                                  child: ElevatedButton(
+                                      onPressed: () {}, child: Text("저장 끝내기")),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                SizedBox(
+                                  width: width / 3,
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        uploadQuestionData();
+                                      },
+                                      child: Text("계속 입력")),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

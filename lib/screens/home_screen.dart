@@ -10,62 +10,102 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final CollectionReference quizStream1 =
+      FirebaseFirestore.instance.collection("Quiz");
 
-  final CollectionReference _questions_new =
-  FirebaseFirestore.instance.collection('questions_new');
+  Widget quizList() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: StreamBuilder(
+        stream: quizStream1.snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+          return streamSnapshot.data == null
+              ? Container()
+              : ListView.builder(
+                  itemCount: streamSnapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final DocumentSnapshot documentSnapshot =
+                        streamSnapshot.data!.docs[index];
+
+                    return QuizTile(
+                        imgUrl: documentSnapshot['quizImgUrl'],
+                        title: documentSnapshot['quizTitle'],
+                        desc: documentSnapshot['quizDesc']);
+                  },
+                );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-
-          Navigator.push(context,MaterialPageRoute(builder:(context) => CreateScreen()));
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CreateScreen()));
         },
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StreamBuilder(
-        stream: _questions_new.snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-          if (streamSnapshot.hasData) {
-            return ListView.builder(
-                itemCount: streamSnapshot.data!.docs.length,
-                itemBuilder: (context, index) {
-                  final DocumentSnapshot documentSnapshot =
-                  streamSnapshot.data!.docs[index];
-                  return GestureDetector(
-                    onTap: () {
+      body: quizList(),
+    );
+  }
+}
 
-                      //   Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) => FirebaseHomeScreen(
-                      //             id: documentSnapshot.id,
-                      //
-                      //           ),),);
-                      // },
-                    },
-                    child: Card(
-                      margin: const EdgeInsets.all(7),
-                      child: ListTile(
-                        title: Text(
-                          documentSnapshot['name'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                            '문제수 :' + documentSnapshot['count'].toString()),
-                      ),
-                    ),
-                  );
-                });
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+class QuizTile extends StatelessWidget {
+  final String imgUrl;
+  final String title;
+  final String desc;
+  QuizTile(
+      {Key? key, required this.imgUrl, required this.title, required this.desc})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 9),
+      height: 150,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              imgUrl,
+              width: MediaQuery.of(context).size.width - 48,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.black26,
+            ),
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(desc,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500))
+              ],
+            ),
+          )
+        ],
       ),
     );
-
   }
 }

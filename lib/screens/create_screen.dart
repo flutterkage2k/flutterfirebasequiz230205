@@ -22,6 +22,7 @@ class _CreateScreenState extends State<CreateScreen> {
       setState(() {
         _isLoading = true;
       });
+
       quizId = randomAlphaNumeric(16);
 
       Map<String, String> quizMap = {
@@ -36,11 +37,13 @@ class _CreateScreenState extends State<CreateScreen> {
           _isLoading = false;
 
           Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddQuestion(
-                        quizId: quizId,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddQuestion(
+                quizId: quizId,
+              ),
+            ),
+          );
         });
       });
     }
