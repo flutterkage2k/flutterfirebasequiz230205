@@ -13,7 +13,7 @@ class CreateScreen extends StatefulWidget {
 class _CreateScreenState extends State<CreateScreen> {
   final _formKey = GlobalKey<FormState>();
   late String quizImageUrl, quizTitle, quizDescription, quizId;
-  DatabaseService dataBaseService = new DatabaseService();
+  DatabaseService dataBaseService = DatabaseService();
 
   bool _isLoading = false;
 
@@ -57,11 +57,11 @@ class _CreateScreenState extends State<CreateScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Quiz'),
+        title: const Text('Create Quiz'),
       ),
       body: _isLoading
           ? Container(
-              child: Center(
+              child: const Center(
                 child: CircularProgressIndicator(),
               ),
             )
@@ -75,37 +75,37 @@ class _CreateScreenState extends State<CreateScreen> {
                     children: [
                       TextFormField(
                         validator: (val) => val!.isEmpty ? "입력하세요" : null,
-                        decoration: InputDecoration(hintText: '이미지 Url'),
+                        decoration: const InputDecoration(hintText: '이미지 Url'),
                         onChanged: (val) {
                           val =
                               'https://images.unsplash.com/photo-1675789652701-4c63584c3a2c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80';
                           quizImageUrl = val;
                         },
                       ),
-                      SizedBox(height: 6),
+                      const SizedBox(height: 6),
                       TextFormField(
                         validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                        decoration: InputDecoration(hintText: '문제 제목'),
+                        decoration: const InputDecoration(hintText: '문제 제목'),
                         onChanged: (val) {
                           quizTitle = val;
                         },
                       ),
-                      SizedBox(height: 6),
+                      const SizedBox(height: 6),
                       TextFormField(
                         validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                        decoration: InputDecoration(hintText: '문제 설명'),
+                        decoration: const InputDecoration(hintText: '문제 설명'),
                         onChanged: (val) {
                           quizDescription = val;
                         },
                       ),
-                      Spacer(),
+                      const Spacer(),
                       SizedBox(
                         width: width * 0.7,
                         child: ElevatedButton(
                             onPressed: () {
                               createQuizOnline();
                             },
-                            child: Text("저장")),
+                            child: const Text("저장")),
                       )
                     ],
                   ),

@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget quizList() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
       child: StreamBuilder(
         stream: quizStream1.snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
@@ -43,16 +43,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CreateScreen()));
-        },
-        child: const Icon(Icons.add),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const CreateScreen()));
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        body: quizList(),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      body: quizList(),
     );
   }
 }
@@ -62,13 +65,13 @@ class QuizTile extends StatelessWidget {
   final String title;
   final String desc;
   final String quizId;
-  QuizTile(
-      {Key? key,
-      required this.imgUrl,
-      required this.title,
-      required this.desc,
-      required this.quizId})
-      : super(key: key);
+  const QuizTile({
+    Key? key,
+    required this.imgUrl,
+    required this.title,
+    required this.desc,
+    required this.quizId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +87,7 @@ class QuizTile extends StatelessWidget {
         );
       },
       child: Container(
-        margin: EdgeInsets.only(top: 5, bottom: 9),
+        margin: const EdgeInsets.only(top: 5, bottom: 9),
         height: MediaQuery.of(context).size.height / 4.7,
         child: Stack(
           children: [
@@ -110,16 +113,16 @@ class QuizTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 17,
                         fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   Text(desc,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.w500))

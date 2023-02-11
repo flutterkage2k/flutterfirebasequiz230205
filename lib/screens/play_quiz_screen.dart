@@ -4,13 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfirebasequiz230205/models/database_service.dart';
 import 'package:flutterfirebasequiz230205/models/question_model.dart';
+import 'package:flutterfirebasequiz230205/screens/add_question.dart';
 import 'package:flutterfirebasequiz230205/screens/result_screen.dart';
 import 'package:flutterfirebasequiz230205/widgets/quiz_play_widgets.dart';
 
 class PlayQuiz extends StatefulWidget {
   final String quizId;
 
-  PlayQuiz({Key? key, required this.quizId}) : super(key: key);
+  const PlayQuiz({
+    Key? key,
+    required this.quizId,
+  }) : super(key: key);
 
   @override
   State<PlayQuiz> createState() => _PlayQuizState();
@@ -24,8 +28,8 @@ int _notattempted = 0;
 StreamController infoStream = StreamController();
 
 class _PlayQuizState extends State<PlayQuiz> {
-  DatabaseService databaseService = new DatabaseService();
-  late QuerySnapshot? questionSnapshot;
+  DatabaseService databaseService = DatabaseService();
+  QuerySnapshot? questionSnapshot;
 
   bool isLoading = true;
 
@@ -68,84 +72,121 @@ class _PlayQuizState extends State<PlayQuiz> {
       setState(() {});
     });
 
-    if (infoStream == null) {
-      infoStream = Stream<List<int>>.periodic(Duration(milliseconds: 100), (x) {
-        print("this is x $x");
-        return [_correct, _incorrect];
-      }) as StreamController;
-    }
+    // infoStream ??= Stream<List<int>>.periodic(const Duration(milliseconds: 100), (x) {
+    //     print("this is x $x");
+    //     return [_correct, _incorrect];
+    //   }) as StreamController;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        title: Text("Play Start"),
-        iconTheme: IconThemeData(
-          color: Colors.black54,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0.0,
+        //   title: const Text("Play Start"),
+        //   iconTheme: const IconThemeData(
+        //     color: Colors.black54,
+        //   ),
+        // ),
+        body: SafeArea(
           child: Column(
             children: [
-              // Row(
-              //   children: [Text(questionSnapshot!.docs.length.toString())],
-              // ),
-              // InfoHeader(length: questionSnapshot!.docs.length.toString()),
               SizedBox(
-                height: 10,
-              ),
-              questionSnapshot == null || questionSnapshot!.docs.length == 0
-                  ? Container(
-                      child: Center(
-                        child: Text("No Data"),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: const Text("총 문제수 "),
                       ),
-                    )
-                  : ListView.builder(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemCount: questionSnapshot!.docs.length,
-                      itemBuilder: (context, index) {
-                        return QuizPlayTile(
-                          questionModel: getQuestionModelFromDatasnapshot(
-                              questionSnapshot!.docs[index]),
-                          index: index,
-                        );
-                      },
-                    )
+                      Container(
+                        child: Text(total.toString()),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddQuestion(
+                                  quizId: widget.quizId,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Icon(Icons.add))
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    child: Column(
+                      children: [
+                        // InfoHeader(length: total.to),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        questionSnapshot == null ||
+                                questionSnapshot!.docs.isEmpty
+                            ? Container(
+                                child: const Center(
+                                  child: Text("No Data"),
+                                ),
+                              )
+                            : ListView.builder(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 10),
+                                shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
+                                itemCount: questionSnapshot!.docs.length,
+                                itemBuilder: (context, index) {
+                                  return QuizPlayTile(
+                                    questionModel:
+                                        getQuestionModelFromDatasnapshot(
+                                            questionSnapshot!.docs[index]),
+                                    index: index,
+                                  );
+                                },
+                              )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.check),
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Results(
-                  incorrect: _incorrect,
-                  total: total,
-                  correct: _correct,
-                  notattempted: _notattempted),
-            ),
-          );
-        },
+
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.check),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Results(
+                    incorrect: _incorrect,
+                    total: total,
+                    correct: _correct,
+                    notattempted: _notattempted),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 }
 
 class InfoHeader extends StatefulWidget {
-  final String length;
+  final int length;
 
-  InfoHeader({required this.length});
+  const InfoHeader({super.key, required this.length});
 
   @override
   _InfoHeaderState createState() => _InfoHeaderState();
@@ -160,7 +201,7 @@ class _InfoHeaderState extends State<InfoHeader> {
           return snapshot.hasData
               ? Container(
                   height: 40,
-                  margin: EdgeInsets.only(left: 14),
+                  margin: const EdgeInsets.only(left: 14),
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -171,15 +212,15 @@ class _InfoHeaderState extends State<InfoHeader> {
                       ),
                       NoOfQuestionTile(
                         text: "Correct",
-                        number: _correct.toString(),
+                        number: _correct,
                       ),
                       NoOfQuestionTile(
                         text: "Incorrect",
-                        number: _incorrect.toString(),
+                        number: _incorrect,
                       ),
                       NoOfQuestionTile(
                         text: "NotAttempted",
-                        number: _notattempted.toString(),
+                        number: _notattempted,
                       ),
                     ],
                   ),
@@ -193,7 +234,8 @@ class QuizPlayTile extends StatefulWidget {
   final QuestionModel questionModel;
   final int index;
 
-  QuizPlayTile({required this.questionModel, required this.index});
+  const QuizPlayTile(
+      {super.key, required this.questionModel, required this.index});
 
   @override
   State<QuizPlayTile> createState() => _QuizPlayTileState();
@@ -209,16 +251,14 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
-              "Q${widget.index + 1} " +
-                  "." +
-                  " ${widget.questionModel.question}",
+              "Q${widget.index + 1} . ${widget.questionModel.question}",
               style:
                   TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.8)),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 7,
           ),
           GestureDetector(
@@ -245,12 +285,12 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
             },
             child: OptionTile(
               option: "A",
-              description: "${widget.questionModel.option1}",
+              description: widget.questionModel.option1,
               correctAnswer: widget.questionModel.correctOption,
               optionSelected: optionSelected,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 2,
           ),
           GestureDetector(
@@ -277,12 +317,12 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
             },
             child: OptionTile(
               option: "B",
-              description: "${widget.questionModel.option2}",
+              description: widget.questionModel.option2,
               correctAnswer: widget.questionModel.correctOption,
               optionSelected: optionSelected,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 2,
           ),
           GestureDetector(
@@ -309,12 +349,12 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
             },
             child: OptionTile(
               option: "C",
-              description: "${widget.questionModel.option3}",
+              description: widget.questionModel.option3,
               correctAnswer: widget.questionModel.correctOption,
               optionSelected: optionSelected,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 2,
           ),
           GestureDetector(
@@ -341,14 +381,15 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
             },
             child: OptionTile(
               option: "D",
-              description: "${widget.questionModel.option4}",
+              description: widget.questionModel.option4,
               correctAnswer: widget.questionModel.correctOption,
               optionSelected: optionSelected,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
+          const Divider(),
         ],
       ),
     );
