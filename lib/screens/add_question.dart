@@ -65,12 +65,17 @@ class _AddQuestionState extends State<AddQuestion> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     children: [
-                      TextFormField(
-                        validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
-                        decoration: InputDecoration(hintText: '문제'),
-                        onChanged: (val) {
-                          question = val;
-                        },
+                      Expanded(
+                        child: TextFormField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          expands: true,
+                          validator: (val) => val!.isEmpty ? "빈칸을 채우세요" : null,
+                          decoration: InputDecoration(hintText: '문제'),
+                          onChanged: (val) {
+                            question = val;
+                          },
+                        ),
                       ),
                       SizedBox(height: 6),
                       TextFormField(
@@ -115,7 +120,10 @@ class _AddQuestionState extends State<AddQuestion> {
                                 SizedBox(
                                   width: width / 3,
                                   child: ElevatedButton(
-                                      onPressed: () {}, child: Text("저장 끝내기")),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("저장 끝내기")),
                                 ),
                                 SizedBox(
                                   width: 10,
