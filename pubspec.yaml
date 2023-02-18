@@ -41,6 +41,10 @@ dependencies:
 
   random_string: ^2.3.1
 
+  google_mobile_ads: ^2.3.0
+
+  get: ^4.6.5
+
   #messagetoast
   fluttertoast: ^8.1.2
 
@@ -49,9 +53,31 @@ dependencies:
   firebase_auth: ^4.2.5
   social_login_buttons: ^1.0.7
 
+  flutter_launcher_icons: ^0.11.0
+#  flutter_launcher_name: ^0.0.1
+
+
+
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+
+
+
+flutter_launcher_name:
+  name: "한국,어 문제집"
+
+
+flutter_icons:
+  android: 'launcher_icon'
+  ios: true
+  image_path: "assets/icons/appicon.png"
+  min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -72,8 +98,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/icons/appicon.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

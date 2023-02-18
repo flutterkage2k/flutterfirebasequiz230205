@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfirebasequiz230205/firebase_options.dart';
-import 'package:flutterfirebasequiz230205/screens/home_screen.dart';
+import 'package:flutterfirebasequiz230205/screens/splash_screen.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -16,8 +18,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
+    return MaterialApp(
+      title: 'Korean testing',
+      theme: ThemeData(primarySwatch: Colors.purple),
+      home: SplashScreen(),
     );
 
     // return MaterialApp(

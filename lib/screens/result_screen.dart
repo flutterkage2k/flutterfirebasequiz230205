@@ -34,7 +34,7 @@ class _ResultsState extends State<Results> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    "you answered ${widget.correct} answers correctly and ${widget.incorrect} answeres incorrectly",
+                    "당신이 선택한 ${widget.correct} 개(갯수)는 정답입니다. \n그리고 ${widget.incorrect} 개(갯수)는 오답입니다.",
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -49,14 +49,15 @@ class _ResultsState extends State<Results> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                     decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color: Colors.purple,
                         borderRadius: BorderRadius.circular(30)),
                     child: const Text(
-                      "Go to home",
+                      "다른 문제를 풀어볼까요?",
                       style: TextStyle(color: Colors.white, fontSize: 19),
                     ),
                   ),
-                )
+                ),
+                Container(child: Text("문제는 계속 업데이트 됩니다."))
               ],
             ),
           ),

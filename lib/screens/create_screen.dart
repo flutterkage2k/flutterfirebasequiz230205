@@ -74,11 +74,10 @@ class _CreateScreenState extends State<CreateScreen> {
                   child: Column(
                     children: [
                       TextFormField(
-                        validator: (val) => val!.isEmpty ? "입력하세요" : null,
+                        validator: (val) =>
+                            val!.isEmpty ? "이미지 주소를 넣어주세요" : null,
                         decoration: const InputDecoration(hintText: '이미지 Url'),
                         onChanged: (val) {
-                          val =
-                              'https://images.unsplash.com/photo-1675789652701-4c63584c3a2c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80';
                           quizImageUrl = val;
                         },
                       ),

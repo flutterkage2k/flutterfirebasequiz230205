@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfirebasequiz230205/models/database_service.dart';
 import 'package:flutterfirebasequiz230205/models/question_model.dart';
-import 'package:flutterfirebasequiz230205/screens/add_question.dart';
 import 'package:flutterfirebasequiz230205/screens/result_screen.dart';
 import 'package:flutterfirebasequiz230205/widgets/quiz_play_widgets.dart';
 
@@ -85,40 +84,38 @@ class _PlayQuizState extends State<PlayQuiz> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.transparent,
-        //   elevation: 0.0,
-        //   title: const Text("Play Start"),
-        //   iconTheme: const IconThemeData(
-        //     color: Colors.black54,
-        //   ),
-        // ),
         body: SafeArea(
           child: Column(
             children: [
               SizedBox(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(top: 10, left: 10),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        child: const Text("총 문제수 "),
+                      Center(
+                        child: Container(
+                          child: const Text(
+                            "빨간색은 틀렸습니다. 녹색은 정답입니다.",
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ),
-                      Container(
-                        child: Text(total.toString()),
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddQuestion(
-                                  quizId: widget.quizId,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Icon(Icons.add))
+                      /* 문제 추가 할때 활성화 해서 사용할 수 있는 부분 */
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     Navigator.pushReplacement(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => AddQuestion(
+                      //           quizId: widget.quizId,
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      //   child: const Icon(Icons.add),
+                      // )
                     ],
                   ),
                 ),
@@ -128,7 +125,6 @@ class _PlayQuizState extends State<PlayQuiz> {
                   child: Container(
                     child: Column(
                       children: [
-                        // InfoHeader(length: total.to),
                         const SizedBox(
                           height: 10,
                         ),
@@ -162,7 +158,6 @@ class _PlayQuizState extends State<PlayQuiz> {
             ],
           ),
         ),
-
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.check),
           onPressed: () {
@@ -182,53 +177,53 @@ class _PlayQuizState extends State<PlayQuiz> {
     );
   }
 }
-
-class InfoHeader extends StatefulWidget {
-  final int length;
-
-  const InfoHeader({super.key, required this.length});
-
-  @override
-  _InfoHeaderState createState() => _InfoHeaderState();
-}
-
-class _InfoHeaderState extends State<InfoHeader> {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: infoStream.stream,
-        builder: (context, snapshot) {
-          return snapshot.hasData
-              ? Container(
-                  height: 40,
-                  margin: const EdgeInsets.only(left: 14),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      NoOfQuestionTile(
-                        text: "Total",
-                        number: widget.length,
-                      ),
-                      NoOfQuestionTile(
-                        text: "Correct",
-                        number: _correct,
-                      ),
-                      NoOfQuestionTile(
-                        text: "Incorrect",
-                        number: _incorrect,
-                      ),
-                      NoOfQuestionTile(
-                        text: "NotAttempted",
-                        number: _notattempted,
-                      ),
-                    ],
-                  ),
-                )
-              : Container();
-        });
-  }
-}
+//
+// class InfoHeader extends StatefulWidget {
+//   final int length;
+//
+//   const InfoHeader({super.key, required this.length});
+//
+//   @override
+//   _InfoHeaderState createState() => _InfoHeaderState();
+// }
+//
+// class _InfoHeaderState extends State<InfoHeader> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder(
+//         stream: infoStream.stream,
+//         builder: (context, snapshot) {
+//           return snapshot.hasData
+//               ? Container(
+//                   height: 40,
+//                   margin: const EdgeInsets.only(left: 14),
+//                   child: ListView(
+//                     scrollDirection: Axis.horizontal,
+//                     shrinkWrap: true,
+//                     children: <Widget>[
+//                       NoOfQuestionTile(
+//                         text: "Total",
+//                         number: widget.length,
+//                       ),
+//                       NoOfQuestionTile(
+//                         text: "Correct",
+//                         number: _correct,
+//                       ),
+//                       NoOfQuestionTile(
+//                         text: "Incorrect",
+//                         number: _incorrect,
+//                       ),
+//                       NoOfQuestionTile(
+//                         text: "NotAttempted",
+//                         number: _notattempted,
+//                       ),
+//                     ],
+//                   ),
+//                 )
+//               : Container();
+//         });
+//   }
+// }
 
 class QuizPlayTile extends StatefulWidget {
   final QuestionModel questionModel;
